@@ -1,0 +1,6 @@
+{
+  "name": "Institutional Multi-School Trading Signals Bot",
+  "description": "Python quantitative trading signals engine combining SMC/ICT, Volume/VWAP, Price Action/Divergence, and Adaptive Regime filters for Crypto and Gold (XAUUSD).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

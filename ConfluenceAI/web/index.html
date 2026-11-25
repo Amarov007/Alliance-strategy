@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark light" />
+  <meta id="meta-theme" name="theme-color" content="#04060a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="ConfluenceAI" />
+  <title>ConfluenceAI | لوحة الإشارات</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Fonts load without blocking first paint; system fonts are used until (or if) they arrive. -->
+  <link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@500;600;700&display=swap" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@500;600;700&display=swap" /></noscript>
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    /* Apply the saved theme before first paint (default: OLED dark) to avoid a flash. */
+    try {
+      var t = localStorage.getItem("cai_theme") === "light" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", t);
+      document.getElementById("meta-theme").setAttribute("content", t === "light" ? "#f3f5f9" : "#04060a");
+    } catch (e) { /* storage blocked: keep dark */ }
+  </script>
+</head>
+<body class="loading">
+
+  <!-- Icon sprite -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11.2 12 4.5l8 6.7V19a1 1 0 0 1-1 1h-4.2v-5.2H9.2V20H5a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-signal" viewBox="0 0 24 24"><path d="M13.2 3 5.5 13.4h5.7L10.2 21l8.3-10.6h-5.8z"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M5.5 19.5v-8M12 19.5v-15M18.5 19.5v-10"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.3" stroke-width="3" stroke-dasharray="3.26 3.26"/><circle cx="12" cy="12" r="5.6"/><circle cx="12" cy="12" r="2.1"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.8v2M12 19.2v2M2.8 12h2M19.2 12h2M5.5 5.5l1.4 1.4M17.1 17.1l1.4 1.4M5.5 18.5l1.4-1.4M17.1 6.9l1.4-1.4"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.6A8.2 8.2 0 0 1 9.4 4a8.2 8.2 0 1 0 10.6 10.6z"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2.6"/><path d="M5 15V6.6A2.6 2.6 0 0 1 7.6 4H15"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.6 4.4 4.4L19 7.4"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
+  </svg>
+
+  <header class="top">
+    <div class="top-in">
+      <div class="brand">
+        <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" class="ic"><path d="M4 16.5 9 11l3.6 3.6L20 7"/><path d="M15 7h5v5"/></svg></span>
+        <span class="brand-name">ConfluenceAI</span>
+      </div>
+      <div class="top-actions">
+        <span id="live" class="live" data-state="idle" role="status" aria-live="polite">
+          <i class="dot" aria-hidden="true"></i><span id="updated" class="num">—</span>
+        </span>
+        <button id="btn-theme" class="icon-btn" type="button" aria-label="تبديل الوضع الفاتح والداكن">
+          <svg class="ic" aria-hidden="true"><use id="theme-use" href="#i-sun"/></svg>
+        </button>
+        <button id="btn-settings" class="icon-btn" type="button" aria-label="الإعدادات">
+          <svg class="ic" aria-hidden="true"><use href="#i-gear"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div id="banner" class="banner" role="alert" hidden>
+    <span id="banner-text"></span>
+    <button id="banner-action" class="banner-btn" type="button" hidden>الإعدادات</button>
+  </div>
+
+  <main id="main">
+
+    <!-- ========== الرئيسية ========== -->
+    <section id="tab-overview" class="tab" aria-label="الرئيسية">
+      <div class="seg" role="group" aria-label="الفترة الزمنية">
+        <button type="button" data-days="1">اليوم</button>
+        <button type="button" data-days="7">7 أيام</button>
+        <button type="button" data-days="30">30 يوماً</button>
+      </div>
+
+      <div class="cards" id="cards">
+        <div class="card" id="c-wr">
+          <div class="k">نسبة النجاح</div>
+          <div class="v num">—</div>
+          <div class="s">&nbsp;</div>
+        </div>
+        <div class="card" id="c-net">
+          <div class="k">صافي العائد</div>
+          <div class="v num">—</div>
+          <div class="s">&nbsp;</div>
+        </div>
+        <div class="card" id="c-act">
+          <div class="k">الصفقات النشطة</div>
+          <div class="v num">—</div>
+          <div class="s">&nbsp;</div>
+        </div>
+        <div class="card" id="c-pf">
+          <div class="k">معامل الربحية</div>
+          <div class="v num">—</div>
+          <div class="s">&nbsp;</div>
+        </div>
+      </div>
+
+      <div class="panel eq-panel">
+        <div class="eq-head">
+          <div class="eq-title">
+            <div class="k">العائد التراكمي</div>
+            <div id="eq-val" class="eq-val num">—</div>
+          </div>
+          <div id="eq-meta" class="eq-meta">&nbsp;</div>
+        </div>
+        <div id="equity" class="equity" dir="ltr"></div>
+      </div>
+    </section>
+
+    <!-- ========== الإشارات ========== -->
+    <section id="tab-signals" class="tab" aria-label="الإشارات" hidden>
+      <div class="chips" role="group" aria-label="تصفية الإشارات">
+        <button type="button" class="chip" data-f="ALL"><span>الكل</span><span class="n num" id="n-all">—</span></button>
+        <button type="button" class="chip" data-f="ACTIVE"><span>نشطة</span><span class="n num" id="n-active">—</span></button>
+        <button type="button" class="chip" data-f="PENDING"><span>معلقة</span><span class="n num" id="n-pending">—</span></button>
+        <button type="button" class="chip" data-f="CLOSED"><span>مغلقة</span><span class="n num" id="n-closed">—</span></button>
+      </div>
+      <div id="trade-list" class="trade-list"></div>
+    </section>
+
+    <!-- ========== الأداء ========== -->
+    <section id="tab-analytics" class="tab" aria-label="الأداء" hidden>
+      <div class="seg" role="group" aria-label="الفترة الزمنية">
+        <button type="button" data-days="1">اليوم</button>
+        <button type="button" data-days="7">7 أيام</button>
+        <button type="button" data-days="30">30 يوماً</button>
+      </div>
+
+      <div class="an-grid">
+        <div class="panel">
+          <h2 class="p-title">الكريبتو مقابل الذهب</h2>
+          <div id="cmp" class="p-body"></div>
+        </div>
+        <div class="panel">
+          <h2 class="p-title">أفضل الرموز أداءً</h2>
+          <div id="top-symbols" class="p-body"></div>
+        </div>
+      </div>
+    </section>
+
+    <p class="foot">إشارات تعليمية وليست نصيحة مالية.</p>
+  </main>
+
+  <!-- شريط التنقل السفلي العائم -->
+  <nav class="dock" id="dock" aria-label="التنقل الرئيسي">
+    <span class="dock-pill" aria-hidden="true"></span>
+    <button type="button" class="dock-btn" data-tab="overview"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg><span>الرئيسية</span></button>
+    <button type="button" class="dock-btn" data-tab="signals"><svg class="ic" aria-hidden="true"><use href="#i-signal"/></svg><span>الإشارات</span></button>
+    <button type="button" class="dock-btn" data-tab="analytics"><svg class="ic" aria-hidden="true"><use href="#i-chart"/></svg><span>الأداء</span></button>
+  </nav>
+
+  <!-- ========== نافذة تفاصيل الصفقة (Bottom Sheet) ========== -->
+  <div id="sheet-root" class="sheet-root" hidden>
+    <div class="backdrop" data-close></div>
+    <section id="sheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+      <div id="sheet-grab" class="grab"><span class="grab-bar"></span></div>
+      <button id="sheet-x" class="sheet-x icon-btn" type="button" data-close aria-label="إغلاق">
+        <svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>
+      </button>
+      <div id="sheet-scroll" class="sheet-scroll">
+        <div id="sheet-head" class="sheet-head"></div>
+        <div id="sheet-levels"></div>
+
+        <div class="sec">
+          <h3 class="sec-title">سبب الدخول</h3>
+          <ul id="sheet-why" class="why"></ul>
+        </div>
+
+        <div class="sec">
+          <h3 class="sec-title">حاسبة المخاطرة</h3>
+          <div class="calc">
+            <div class="fields">
+              <label class="field">
+                <span>رأس المال ($)</span>
+                <input id="calc-cap" class="num" type="text" inputmode="decimal" autocomplete="off" value="1000" />
+              </label>
+              <label class="field">
+                <span>نسبة المخاطرة (%)</span>
+                <input id="calc-risk" class="num" type="text" inputmode="decimal" autocomplete="off" value="1" />
+              </label>
+            </div>
+            <div class="risk-chips" id="risk-chips" role="group" aria-label="نسب جاهزة">
+              <button type="button" data-risk="0.5" class="num">0.5%</button>
+              <button type="button" data-risk="1" class="num">1%</button>
+              <button type="button" data-risk="2" class="num">2%</button>
+              <button type="button" data-risk="3" class="num">3%</button>
+            </div>
+            <p id="calc-hint" class="calc-hint" aria-live="polite">&nbsp;</p>
+            <dl class="out">
+              <div class="orow"><dt>مبلغ المخاطرة</dt><dd><span class="num" id="o-risk">—</span></dd></div>
+              <div class="orow"><dt>حجم الصفقة</dt><dd><span class="num" id="o-size">—</span><small id="o-unit"></small></dd></div>
+              <div class="orow"><dt>قيمة الصفقة</dt><dd><span class="num" id="o-notional">—</span></dd></div>
+              <div class="orow gain"><dt>ربح الهدف 1</dt><dd><span class="num pos" id="o-tp1">—</span><small class="num" id="o-r1"></small></dd></div>
+              <div class="orow gain"><dt>ربح الهدف 2</dt><dd><span class="num pos" id="o-tp2">—</span><small class="num" id="o-r2"></small></dd></div>
+              <div class="orow gain"><dt>ربح الهدف 3</dt><dd><span class="num pos" id="o-tp3">—</span><small class="num" id="o-r3"></small></dd></div>
+            </dl>
+            <p class="calc-note">تقدير تقريبي بدون رسوم أو انزلاق سعري. الحساب على وقف الخسارة الأصلي.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ========== الإعدادات ========== -->
+  <dialog id="settings" class="settings" aria-labelledby="settings-title">
+    <form method="dialog" class="settings-form">
+      <h3 id="settings-title">الإعدادات</h3>
+      <label class="field">
+        <span>مفتاح الدخول (API_TOKEN)</span>
+        <div class="with-btn">
+          <input id="token" class="num" type="password" autocomplete="off" spellcheck="false" placeholder="اتركه فارغاً إن كان محلياً" />
+          <button id="token-toggle" type="button" class="ghost-btn">إظهار</button>
+        </div>
+      </label>
+      <label class="field">
+        <span>عنوان الخادم (اختياري)</span>
+        <input id="base" class="num" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://signals.example.com" />
+      </label>
+      <menu class="settings-actions">
+        <button id="save" value="ok" class="btn primary">حفظ</button>
+        <button value="cancel" class="btn" formnovalidate>إغلاق</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

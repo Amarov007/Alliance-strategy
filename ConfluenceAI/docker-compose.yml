@@ -1,0 +1,14 @@
+services:
+  bot:
+    build: .
+    container_name: confluenceai
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      API_HOST: 0.0.0.0        # inside the container; API_TOKEN in .env is mandatory
+    ports:
+      - "127.0.0.1:8080:8080"  # expose publicly only behind an HTTPS reverse proxy
+    volumes:
+      - bot-data:/data
+volumes:
+  bot-data:
